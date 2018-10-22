@@ -1,0 +1,78 @@
+<div class="jumbotron container">
+    <h1 class="display-4">Burgers To Eat  <img id="burgerImg" src="assets/img/burger.png" alt=""></h1>
+    <p class="lead">Click the "Devour!" button next to any burger to eat it! You can also add your own burger to the
+        list by entering it in the input box below.</p>
+    <hr class="my-4">
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <ul>
+                {{#each burgers}}
+                <li>
+                    <p>{{burger_name}}
+                        <button type="button" class="btn btn-primary devourBtn" id={{id}}>Devour!</button>
+                    </p>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-6">
+            <ul>
+                {{#each dburgers}}
+                <li>
+                    <p>{{burger_name}}</p>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+    <br>
+    <form>
+        <input class="rounded form-control" type="text" id="newBurger" placeholder="Enter a new burger to eat."></input>
+        <br>
+        <button type="submit" class="btn btn-primary" id="addBtn">Add Burger!</button>
+    </form>
+</div>
+
+<script>
+    $("#addBtn").on("click", function (event) {
+        event.preventDefault();
+
+        var newBurger = {
+            burger_name: $("#newBurger").val().trim()
+        };
+
+        // Send the POST request.
+        $.ajax("/", {
+            type: "POST",
+            data: newBurger
+        }).then(
+            function () {
+                console.log("added new burger");
+                // Reload the page to get the updated list
+                location.reload();
+            }
+        );
+    });
+
+    $(".devourBtn").on("click", function () {
+        var changedBurger = {
+            id: $(this).attr("id")
+        }
+
+        // Send the PUT request.
+        $.ajax("/", {
+            type: "PUT",
+            data: changedBurger
+        }).then(
+            function () {
+                console.log("devoured burger " + changedBurger.id);
+                // Reload the page to get the updated list
+                location.reload();
+            }
+        );
+
+    });
+
+
+</script>
